@@ -1,0 +1,14 @@
+.git
+.github
+.venv
+.pytest_cache
+.pytest_tmp
+.ipython
+.jupyter
+.matplotlib
+data
+notebooks
+outputs
+tests
+__pycache__
+*.pyc

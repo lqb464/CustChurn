@@ -1,0 +1,33 @@
+name: LendScope CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Cài dependencies
+        run: python -m pip install -e ".[api,dev]"
+      - name: Kiểm tra import và cú pháp
+        run: python -m compileall -q src backend scripts
+      - name: Chạy test
+        run: python -m pytest --cov=src --cov=backend --cov-report=term-missing
+      - name: Kiểm tra lint nghiêm trọng
+        run: ruff check src backend scripts tests --select E9,F63,F7,F82
+
+  containers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build API image
+        run: docker build -f backend/Dockerfile -t lendscope-api .
+      - name: Build frontend image
+        run: docker build -f frontend/Dockerfile -t lendscope-frontend .

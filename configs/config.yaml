@@ -1,0 +1,29 @@
+project:
+  name: LendScope
+  objective: "Hồi quy số tiền vay được phê duyệt cho hồ sơ đã qua bước tiền thẩm định"
+  random_state: 42
+
+data:
+  train_path: data/train.csv
+  inference_path: data/test.csv
+  target: "Loan Sanction Amount (USD)"
+  invalid_sentinel: -999
+  population_rule: "target > 0"
+  split: {train: 0.70, validation: 0.15, holdout: 0.15}
+
+selection:
+  primary_metric: mae
+  cv_folds: 5
+  shortlist_size: 3
+  baseline_policy_ratio: 0.70
+
+business_rules:
+  minimum_prediction: 0
+  maximum_request_ratio: 1.0
+  maximum_property_ltv: 0.80
+  prediction_interval_coverage: 0.90
+  manual_review_width_quantile: 0.90
+
+outputs:
+  artifact: outputs/models/lendscope.joblib
+  reports_dir: outputs/reports
